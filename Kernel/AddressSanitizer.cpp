@@ -8,18 +8,30 @@
 
 #    include <Kernel/AddressSanitizer.h>
 
+void Kernel::AddressSanitizer::init()
+{
+    Kernel::AddressSanitizer::enabled = true;
+}
+
 void Kernel::AddressSanitizer::shadow_va_check_load(unsigned long address, size_t size, void* return_address)
 {
     (void)address;
     (void)size;
     (void)return_address;
+
+    if (!Kernel::AddressSanitizer::enabled) [[unlikely]]
+        return;
 }
 
 void Kernel::AddressSanitizer::shadow_va_check_store(unsigned long address, size_t size, void* return_address)
 {
+
     (void)address;
     (void)size;
     (void)return_address;
+
+    if (!Kernel::AddressSanitizer::enabled) [[unlikely]]
+        return;
 }
 
 using namespace Kernel;

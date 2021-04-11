@@ -5,6 +5,7 @@
  */
 
 #include <AK/Types.h>
+#include <Kernel/AddressSanitizer.h>
 #include <Kernel/ACPI/DynamicParser.h>
 #include <Kernel/ACPI/Initialize.h>
 #include <Kernel/ACPI/MultiProcessorParser.h>
