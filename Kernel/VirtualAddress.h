@@ -12,12 +12,12 @@
 class VirtualAddress {
 public:
     VirtualAddress() = default;
-    explicit VirtualAddress(FlatPtr address)
+    constexpr explicit VirtualAddress(FlatPtr address)
         : m_address(address)
     {
     }
 
-    explicit VirtualAddress(const void* address)
+    constexpr explicit VirtualAddress(const void* address)
         : m_address((FlatPtr)address)
     {
     }
@@ -49,6 +49,21 @@ private:
 inline VirtualAddress operator-(const VirtualAddress& a, const VirtualAddress& b)
 {
     return VirtualAddress(a.get() - b.get());
+}
+
+inline VirtualAddress operator+(const VirtualAddress& a, const VirtualAddress& b)
+{
+    return VirtualAddress(a.get() + b.get());
+}
+
+inline VirtualAddress operator>>(const VirtualAddress& a, const VirtualAddress& b)
+{
+    return VirtualAddress(a.get() >> b.get());
+}
+
+inline VirtualAddress operator<<(const VirtualAddress& a, const VirtualAddress& b)
+{
+    return VirtualAddress(a.get() << b.get());
 }
 
 template<>

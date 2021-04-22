@@ -7,34 +7,55 @@
 #if defined(__SANITIZE_ADDRESS__)
 
 #    include <Kernel/AddressSanitizer.h>
+#    include <Kernel/VM/MemoryManager.h>
 
-void Kernel::AddressSanitizer::init()
+namespace Kernel::AddressSanitizer {
+
+bool sm_sanitizer_enabled { false };
+
+void initialize()
 {
-    Kernel::AddressSanitizer::enabled = true;
+    //MM.allocate_kernel_region_identity()
+    sm_sanitizer_enabled = true;
 }
 
-void Kernel::AddressSanitizer::shadow_va_check_load(unsigned long address, size_t size, void* return_address)
+inline VirtualAddress address_to_shadow(const FlatPtr address)
 {
-    (void)address;
+    // The formula for shadow address translation is:
+    //   shadow_address = (address >> 3) + Constants::ShadowOffset;
+    //
+    // We (>> 3) because we are trying to divide by 8, as each byte
+    // in the shadow memory region covers 8 bytes of kernel memory.
+    // Hence one bit in shadow memory represents one byte of kernel memory.
+    return (VirtualAddress(address) >> Constants::ShadowScaleShift) + Constants::ShadowOffset;
+}
+
+void shadow_va_check_load(unsigned long address, size_t size, void* return_address)
+{
     (void)size;
     (void)return_address;
 
-    if (!Kernel::AddressSanitizer::enabled) [[unlikely]]
+    if (!sm_sanitizer_enabled) [[unlikely]]
         return;
+
+    auto shadow_address = address_to_shadow(address);
+    (void)shadow_address;
 }
 
-void Kernel::AddressSanitizer::shadow_va_check_store(unsigned long address, size_t size, void* return_address)
+void shadow_va_check_store(unsigned long address, size_t size, void* return_address)
 {
-
-    (void)address;
     (void)size;
     (void)return_address;
 
-    if (!Kernel::AddressSanitizer::enabled) [[unlikely]]
+    if (!sm_sanitizer_enabled) [[unlikely]]
         return;
+
+    auto shadow_address = address_to_shadow(address);
+    (void)shadow_address;
 }
 
-using namespace Kernel;
+}
+
 using namespace Kernel::AddressSanitizer;
 
 extern "C" {
