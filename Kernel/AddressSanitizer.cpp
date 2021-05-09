@@ -6,6 +6,7 @@
 
 #if defined(__SANITIZE_ADDRESS__)
 
+#    include <AK/Format.h>
 #    include <Kernel/AddressSanitizer.h>
 #    include <Kernel/VM/MemoryManager.h>
 
@@ -16,6 +17,7 @@ bool sm_sanitizer_enabled { false };
 void initialize()
 {
     //MM.allocate_kernel_region_identity()
+    dmesgln("KASAN Initialized... {}", 1);
     sm_sanitizer_enabled = true;
 }
 

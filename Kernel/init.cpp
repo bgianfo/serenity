@@ -131,6 +131,7 @@ extern "C" [[noreturn]] UNMAP_AFTER_INIT void init()
 
     CommandLine::initialize();
     MemoryManager::initialize(0);
+    AddressSanitizer::initialize();
 
     // Ensure that the safemem sections are not empty. This could happen if the linker accidentally discards the sections.
     VERIFY(&start_of_safemem_text != &end_of_safemem_text);
