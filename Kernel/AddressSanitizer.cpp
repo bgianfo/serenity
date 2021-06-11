@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
+#include <Kernel/AddressSanitizer.h>
+
 #if defined(__SANITIZE_ADDRESS__)
 
 #    include <AK/Format.h>
-#    include <Kernel/AddressSanitizer.h>
 #    include <Kernel/VM/MemoryManager.h>
 
 namespace Kernel::AddressSanitizer {
@@ -136,6 +137,17 @@ void __asan_after_dynamic_init();
 void __asan_after_dynamic_init()
 {
 }
+}
+
+#else
+
+namespace Kernel::AddressSanitizer {
+
+void initialize()
+{
+    // NOP when ASAN is not enabled.
+}
+
 }
 
 #endif

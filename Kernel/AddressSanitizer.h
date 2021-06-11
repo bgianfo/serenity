@@ -75,4 +75,10 @@ void shadow_va_check_store(unsigned long address, size_t size, void* return_addr
 
 }
 
+#else
+
+namespace Kernel::AddressSanitizer {
+void initialize();
+}
+
 #endif
